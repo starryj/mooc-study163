@@ -14,7 +14,7 @@ class MoocDown(object):
 
     @staticmethod
     def videoDown(video_name, video_href, video_id, video_type):
-        path1 = os.path.join('D:\DATAS\MOOC Videos\\', video_name)
+        path1 = os.path.join('D:\DATAS\MOOC Videos', video_name)
         if not os.path.exists(path1):
             os.mkdir(path1)
         path = path1 + video_name + str(video_id) + '.' + video_type
