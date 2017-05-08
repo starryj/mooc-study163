@@ -14,8 +14,10 @@ class MoocDown(object):
 
     @staticmethod
     def videoDown(video_name, video_href, video_id, video_type):
-        print(video_id)
-        path = 'D:\DATAS\MOOC Videos\\' + video_name + str(video_id) + '.' + video_type
+        path1 = os.path.join('D:\DATAS\MOOC Videos\\', video_name)
+        if not os.path.exists(path1):
+            os.mkdir(path1)
+        path = path1 + video_name + str(video_id) + '.' + video_type
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'}
         if os.path.exists(path):
             os.remove(path)
@@ -42,7 +44,7 @@ class MoocDown(object):
 
         coll = self.db[class_name]
         links = coll.find({'name': class_name})
-        if not links:
+        if str(links.count()) == '0:
             ml = MoocLink(class_name)
             ml.getFlv()
             coll = self.db[class_name]
