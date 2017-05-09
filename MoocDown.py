@@ -1,3 +1,13 @@
+#!/usr/bin/env python3.6
+# -*- coding:utf-8 -*-
+'''
+Required
+- requests, mongodb
+Info
+- author : "starryj"
+- date   : "2017.5.8"
+'''
+
 import requests
 import pymongo
 import os
@@ -17,7 +27,8 @@ class MoocDown(object):
         path1 = os.path.join('D:\DATAS\MOOC Videos', video_name)
         if not os.path.exists(path1):
             os.mkdir(path1)
-        path = path1 + video_name + str(video_id) + '.' + video_type
+        path2 = video_name + str(video_id) + '.' + video_type
+        path = os.path.join(path1, path2)
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'}
         if os.path.exists(path):
             os.remove(path)
