@@ -50,6 +50,8 @@ class MoocDown(object):
     def Down(self):
         href = []
         ids = []
+        p_href = []
+        p_ids = []
         class_name = input("输入你正在找的课程：")
 
         coll = self.db[class_name]
