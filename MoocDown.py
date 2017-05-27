@@ -24,11 +24,10 @@ class MoocDown(object):
 
     @staticmethod
     def videoDown(video_name, video_href, video_id, video_type):
-        path1 = os.path.join('D:\DATAS\MOOC Videos', video_name)
+        path1 = os.path.join('D:\DATAS\MOOC Videos\\', video_name)
         if not os.path.exists(path1):
             os.mkdir(path1)
-        path2 = video_name + str(video_id) + '.' + video_type
-        path = os.path.join(path1, path2)
+        path = os.path.join(path1, video_name + str(video_id) + '.' + video_type)
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'}
         if os.path.exists(path):
             os.remove(path)
@@ -43,7 +42,7 @@ class MoocDown(object):
                     p.log(len(i))
             client = pymongo.MongoClient('localhost')
             db = client['MOOC']
-            db[video_name].remove({'link': video_href})
+            db[video_name].remove({'_id': video_id})
             client.close()
         except Exception as E:
             print(E)
@@ -54,20 +53,36 @@ class MoocDown(object):
         class_name = input("输入你正在找的课程：")
 
         coll = self.db[class_name]
-        links = coll.find({'name': class_name})
-        if str(links.count()) == '0:
+        V_links = coll.find({'name': class_name})
+        P_links = coll.find({'name': 'pdf'})
+        T_texts = coll.find({'name': 'text'})
+        if str(V_links.count()) == '0':
             ml = MoocLink(class_name)
             ml.getFlv()
             coll = self.db[class_name]
-            links = coll.find({'name': class_name})
+            V_links = coll.find({'name': class_name})
+            P_links = coll.find({'name': 'pdf'})
+            T_texts = coll.find({'name': 'text'})
         videos = ['超清flv', '高清flv', '标清flv', '超清mp4', '高清mp4', '标清mp4']
         print('你想下载哪种格式的视频', videos)
         video = input('输入你要下载的格式（回车）：')
 
         vt = video[2:]
-        for link in links:
+        for link in V_links:
             href.append(link[video])
             ids.append(link['_id'])
+        for P_link in P_links:
+            p_href.append(P_link[video])
+            p_ids.append(P_link['_id'])
+        path1 = os.path.join('D:\DATAS\MOOC Videos\\', class_name)
+        if not os.path.exists(path1):
+            os.mkdir(path1)
+        print('正在下载富文本文件')
+        for texts in T_texts:
+            text_id = texts['_id']
+            path = os.path.join(path1, class_name + str(text_id) + '.text')
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(texts['text'])
         self.client.close()
         pool = Pool(4)
         try:
@@ -77,6 +92,10 @@ class MoocDown(object):
             pool.join()
         except Exception as e:
             print(e)
+        for p in range(len(p_href)):
+            pool.apply_async(func=self.videoDown, args=(class_name, p_href[h], p_ids[h], 'pdf'))
+        pool.close()
+        pool.join()
 
 
 if __name__ == '__main__':
