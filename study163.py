@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from selenium import webdriver
 from mongosave import Mongo
 import random
@@ -118,7 +119,7 @@ class study163(object):
                 hfm = []
                 for fm in zip(videos, Video_re):
                     hfm.append(fm)
-                hfm.append(('_id', detail[i]))
+                hfm.append(('course_name', detail[i]))
                 hfm.append(('name', course_name))
                 v_data = dict(hfm)
                 self.mongo.save(v_data)
@@ -127,6 +128,3 @@ class study163(object):
                 continue
 
 
-if __name__ == '__main__':
-    study = study163(name='和秋叶一起学PPT--超4.8万付费学员')
-    study.getVideoInfo()
