@@ -85,13 +85,13 @@ class MoocDown(object):
         for p in P_links:
             pdf_href.append(p['pdf'])
             p_name.append((p['week_name'], p['until_name'], p['course_name']))
-        path1 = os.path.join('D:\DATAS\MOOC Videos\\', class_name)
-        if not os.path.exists(path1):
-            os.mkdir(path1)
+        path = os.path.join('D:\DATAS\MOOC Videos\\', class_name)
+        if not os.path.exists(path):
+            os.mkdir(path)
         print('正在下载富文本文件')
         for t in T_texts:
             print(t)
-            path0 = os.path.join(path1, t['week_name'])
+            path0 = os.path.join(path, t['week_name'])
             if not os.path.exists(path0):
                 os.mkdir(path0)
             path1 = os.path.join(path0, t['until_name'])
